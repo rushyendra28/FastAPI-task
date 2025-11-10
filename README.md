@@ -35,7 +35,7 @@ python -m venv venv
 venv\Scripts\activate  # Windows
 # venv/bin/activate    # Linux/macOS
 pip install -r requirements.txt
-
+```
 ### API testing
 
 curl -X POST http://localhost:8000/api/v1/auth/register \
