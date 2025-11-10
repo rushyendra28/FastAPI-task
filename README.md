@@ -36,3 +36,118 @@ venv\Scripts\activate  # Windows
 # venv/bin/activate    # Linux/macOS
 pip install -r requirements.txt
 
+### API testing
+
+curl -X POST http://localhost:8000/api/v1/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "buddy",
+    "email": "buddy@example.com",
+    "password": "SecurePass123!"
+  }'
+
+Response:
+{
+  "id": 1,
+  "username": "buddy",
+  "email": "buddy@example.com",
+  "is_active": true,
+  "created_at": "2025-11-10T15:30:45.123456"
+}
+
+curl -X POST http://localhost:8000/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "buddy",
+    "password": "SecurePass123!"
+  }'
+
+Response:
+{
+  "access_token": "TOKEN",
+  "token_type": "bearer"
+}
+
+curl -X POST http://localhost:8000/api/v1/authors/ \
+  -H "Authorization: Bearer TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "J.K. Rowling",
+    "bio": "Author of the Harry Potter series",
+    "birth_date": "1965-07-31"
+  }'
+
+Response:
+{
+  "id": 1,
+  "name": "J.K. Rowling",
+  "bio": "Author of the Harry Potter series",
+  "birth_date": "1965-07-31"
+}
+
+curl -X POST http://localhost:8000/api/v1/books/ \
+  -H "Authorization: Bearer TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Harry Potter and the Philosopher's Stone",
+    "isbn": "978-0747532699",
+    "published_date": "1997-06-26",
+    "description": "The first novel in the Harry Potter series.",
+    "available": true,
+    "author_id": 1
+  }'
+
+Response:
+{
+  "id": 1,
+  "title": "Harry Potter and the Philosopher's Stone",
+  "isbn": "978-0747532699",
+  "published_date": "1997-06-26",
+  "description": "The first novel in the Harry Potter series.",
+  "available": true,
+  "author_id": 1
+}
+
+curl -X POST http://localhost:8000/api/v1/borrow \
+  -H "Authorization: Bearer Response" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "book_id": 1
+  }'
+
+Response:
+{
+  "id": 1,
+  "user_id": 1,
+  "book_id": 1,
+  "borrowed_at": "2025-11-10T15:40:12.123456",
+  "due_date": "2025-11-24T15:40:12.123456",
+  "returned_at": null
+}
+
+curl -X POST http://localhost:8000/api/v1/return/1 \
+  -H "Authorization: Bearer TOKEN"
+
+Response:
+{
+  "id": 1,
+  "user_id": 1,
+  "book_id": 1,
+  "borrowed_at": "2025-11-10T15:40:12.123456",
+  "due_date": "2025-11-24T15:40:12.123456",
+  "returned_at": "2025-11-10T15:45:30.789012"
+}
+
+curl -X GET http://localhost:8000/api/v1/borrow/history \
+  -H "Authorization: Bearer TOKEN"
+
+[
+  {
+    "id": 1,
+    "user_id": 1,
+    "book_id": 1,
+    "borrowed_at": "2025-11-10T15:40:12.123456",
+    "due_date": "2025-11-24T15:40:12.123456",
+    "returned_at": "2025-11-10T15:45:30.789012"
+  }
+]
